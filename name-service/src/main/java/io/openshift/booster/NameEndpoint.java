@@ -53,10 +53,11 @@ public class NameEndpoint {
 
     @PUT
     @Path("/toggle")
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response toggle(ServiceInfo info) {
+    public ServiceInfo toggle(ServiceInfo info) {
         isOn.set(info.isOn());
-        return Response.status(200).build();
+        return getInfo();
     }
 
     @GET
