@@ -1,0 +1,7 @@
+name-service:
+  uri: http://wfswarm-cb-name:8080/api/name
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        requestVolumeThreshold: 5

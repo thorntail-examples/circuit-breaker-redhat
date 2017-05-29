@@ -1,0 +1,98 @@
+<!--
+  ~
+  ~  Copyright 2016-2017 Red Hat, Inc, and individual contributors.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  -->
+
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<title>Circuit Breaker Mission - Name Service - WildFly Swarm</title>
+
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous">
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div>
+      <h1>Circuit Breaker Mission - Name Service - WildFly Swarm</h1>
+      <p class="lead">TODO</p>
+
+      <h2>Using the name service</h2>
+
+      <form class="form-inline">
+        <button id="invoke" type="submit" class="btn btn-success">Get info</button>
+        <button id="break" type="submit" class="btn btn-success">Break</button>
+        <button id="repair" type="submit" class="btn btn-success">Repair</button>
+      </form>
+
+      <h3>Result:</h3>
+      <pre><code id="name-result">Invoke the service to see the result.</code></pre>
+    </div>
+  </div>
+
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+
+  <script>
+    $(document).ready(function() {
+       $("#invoke").click(function(e) {
+          $.getJSON("/api/info", function(res) {
+              $("#name-result").html(JSON.stringify(res));
+          });
+          e.preventDefault();
+       });
+       $("#break").click(function(e) {
+         $.ajax({
+               url: "/api/toggle",
+               type: 'PUT',
+               headers: {"Content-Type" : "application/json"},
+               data: JSON.stringify({state:"fail"}),
+               success: function(res) {
+                 $("#name-result").html("Name service broken");
+               }
+             });
+          e.preventDefault();
+        });
+       $("#repair").click(function(e) {
+           $.ajax({
+               url: "/api/toggle",
+               type: 'PUT',
+               headers: {"Content-Type" : "application/json"},
+               data: JSON.stringify({state:"ok"}),
+               success: function(res) {
+                 $("#name-result").html("Back in service...");
+               }
+             });
+          e.preventDefault();
+       });
+    });
+</script>
+
+</body>
+
+</html>
