@@ -27,6 +27,11 @@ import javax.inject.Inject;
 
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
+/**
+ * See also <tt>src/main/resources/project-defaults.yml</tt>.
+ *
+ * @author Martin Kouba
+ */
 @ApplicationScoped
 public class NameServiceConfig {
 

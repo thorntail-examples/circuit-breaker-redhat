@@ -34,4 +34,18 @@ public class CircuitBreakerEndpoint {
         return new CircuitBreaker(circuitBreaker != null && circuitBreaker.isOpen() ? "open" : "closed");
     }
 
+    public static class CircuitBreaker {
+
+        private final String state;
+
+        public CircuitBreaker(String state) {
+            this.state = state;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+    }
+
 }

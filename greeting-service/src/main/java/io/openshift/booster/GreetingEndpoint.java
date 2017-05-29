@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
 @Path("/")
@@ -31,11 +32,14 @@ public class GreetingEndpoint {
     @Inject
     URI nameServiceUri;
 
+    @Inject
+    Client client;
+
     @GET
     @Path("/greeting")
     @Produces("application/json")
     public Greeting greeting() {
-        return new Greeting(String.format("Hello, %s!", new NameCommand(nameServiceUri).execute()));
+        return new Greeting(String.format("Hello, %s!", new NameCommand(nameServiceUri, client).execute()));
     }
 
     @GET

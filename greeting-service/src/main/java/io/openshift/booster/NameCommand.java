@@ -20,7 +20,6 @@ package io.openshift.booster;
 import java.net.URI;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -29,6 +28,7 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 
 /**
+ * Wraps the name service invocation.
  *
  * @author Martin Kouba
  */
@@ -40,21 +40,27 @@ public class NameCommand extends HystrixCommand<String> {
 
     private final URI nameServiceUri;
 
-    NameCommand(URI nameServiceUri) {
+    private final Client client;
+
+    NameCommand(URI nameServiceUri, Client client) {
+        // Set the command key explicitly so that we're able to obtain the circuit breaker status
         super(Setter.withGroupKey(GROUP_KEY).andCommandKey(KEY));
         this.nameServiceUri = nameServiceUri;
+        this.client = client;
     }
 
     @Override
     protected String run() throws Exception {
-        Client client = ClientBuilder.newClient();
         Response response = client.target(nameServiceUri).request(MediaType.TEXT_PLAIN_TYPE).get();
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Cannot get name from " + nameServiceUri);
+        try {
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Cannot get name from " + nameServiceUri);
+            }
+            String value = response.readEntity(String.class);
+            return value;
+        } finally {
+            response.close();
         }
-        String value = response.readEntity(String.class);
-        response.close();
-        return value;
     }
 
     @Override

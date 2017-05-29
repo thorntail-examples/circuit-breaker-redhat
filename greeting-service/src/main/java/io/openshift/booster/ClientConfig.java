@@ -17,16 +17,31 @@
  */
 package io.openshift.booster;
 
-public class CircuitBreaker {
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Disposes;
+import javax.enterprise.inject.Produces;
+import javax.ws.rs.client.Client;
 
-    private final String state;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
-    public CircuitBreaker(String state) {
-        this.state = state;
+/**
+ *
+ * @author Martin Kouba
+ */
+@Dependent
+public class ClientConfig {
+
+    @ApplicationScoped
+    @Produces
+    Client produceJaxrsClient() {
+        ResteasyClientBuilder builder = new ResteasyClientBuilder();
+        builder.connectionPoolSize(5);
+        return builder.build();
     }
 
-    public String getState() {
-        return state;
+    void disposeJaxrsClient(@Disposes Client client) {
+        client.close();
     }
 
 }
