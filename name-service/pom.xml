@@ -34,7 +34,7 @@
   <description>WildFly Swarm - Circuit Breaker Booster</description>
 
   <properties>
-    <version.wildfly.swarm>2017.4.0</version.wildfly.swarm>
+    <version.wildfly.swarm>2017.5.0</version.wildfly.swarm>
     <version.resteasy>3.0.19.Final</version.resteasy>
   </properties>
 
