@@ -47,7 +47,7 @@ public class HystrixConfig {
     @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
     ManagedThreadFactory threadFactory;
 
-    // Eager init
+    // Initialize eagerly
     void init(@Observes @Initialized(ApplicationScoped.class) Object event) {
     }
 

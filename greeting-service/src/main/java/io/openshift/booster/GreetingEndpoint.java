@@ -18,6 +18,7 @@
 package io.openshift.booster;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -42,10 +43,36 @@ public class GreetingEndpoint {
         return new Greeting(String.format("Hello, %s!", new NameCommand(nameServiceUri, client).execute()));
     }
 
+    /**
+     * This endpoint is used as Kubernetes liveness and readiness probe.
+     *
+     * @return the response
+     */
     @GET
     @Path("/ping")
     public Response ping() {
         return Response.ok().build();
+    }
+
+    public class Greeting {
+
+        private final String content;
+
+        private final String timestamp;
+
+        public Greeting(String content) {
+            this.content = content;
+            this.timestamp = LocalDateTime.now().toString();
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public String getTimestamp() {
+            return timestamp;
+        }
+
     }
 
 }

@@ -31,10 +31,14 @@ public class CircuitBreakerEndpoint {
     @Produces("application/json")
     public CircuitBreaker getState() {
         HystrixCircuitBreaker circuitBreaker = HystrixCircuitBreaker.Factory.getInstance(NameCommand.KEY);
-        return new CircuitBreaker(circuitBreaker != null && circuitBreaker.isOpen() ? "open" : "closed");
+        return circuitBreaker != null && circuitBreaker.isOpen() ? CircuitBreaker.OPEN : CircuitBreaker.CLOSED;
     }
 
     public static class CircuitBreaker {
+
+        static final CircuitBreaker OPEN = new CircuitBreaker("open");
+
+        static final CircuitBreaker CLOSED = new CircuitBreaker("closed");
 
         private final String state;
 

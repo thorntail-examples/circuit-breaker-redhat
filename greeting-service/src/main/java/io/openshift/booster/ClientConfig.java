@@ -26,12 +26,18 @@ import javax.ws.rs.client.Client;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 /**
+ * JAX-RS client configuration.
  *
  * @author Martin Kouba
  */
 @Dependent
 public class ClientConfig {
 
+    /**
+     * Producer (CDI bean) for a shared {@link Client}.
+     *
+     * @return the client instance
+     */
     @ApplicationScoped
     @Produces
     Client produceJaxrsClient() {
