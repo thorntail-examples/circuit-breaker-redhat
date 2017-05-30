@@ -1,5 +1,5 @@
 name-service:
-  uri: http://wfswarm-cb-name:8080/api/name
+  uri: http://wfswarm-circuit-breaker-name:8080/api/name
 hystrix:
   command:
     default:
