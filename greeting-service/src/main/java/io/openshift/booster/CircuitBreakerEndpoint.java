@@ -34,7 +34,7 @@ public class CircuitBreakerEndpoint {
         return circuitBreaker != null && circuitBreaker.isOpen() ? CircuitBreaker.OPEN : CircuitBreaker.CLOSED;
     }
 
-    public static class CircuitBreaker {
+    static class CircuitBreaker {
 
         static final CircuitBreaker OPEN = new CircuitBreaker("open");
 

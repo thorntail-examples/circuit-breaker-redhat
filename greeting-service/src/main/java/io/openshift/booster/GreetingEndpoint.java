@@ -54,7 +54,7 @@ public class GreetingEndpoint {
         return Response.ok().build();
     }
 
-    public class Greeting {
+    static class Greeting {
 
         private final String content;
 
