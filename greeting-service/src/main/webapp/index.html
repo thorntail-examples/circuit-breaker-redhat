@@ -39,7 +39,8 @@
             mechanism over the failed or unavailable service to service communication, which can quickly and easily determine that the services
             are not functioning properly, hence can either return a default result or fail quickly and gracefully with enough information about
             the current failure. This mechanism is called circuit breaker.
-            <br/>
+      </p>
+      <p>
             On this page you can invoke the <code>greeting service</code>. This service uses a <code>name
             service</code>. The invocations are protected by a circuit breaker. You can configure the state of the
             <code>name service</code> using the <code>toggle</code> button.
@@ -99,7 +100,7 @@
 
     function updateNameServiceState(state) {
       if (state) {
-        $("#name-state").html("<h3>Operational state: <span class=\"label label-info\">UP</span></h3>");
+        $("#name-state").html("<h3>Operational state: <span class=\"label label-info\">OK</span></h3>");
       } else {
         $("#name-state").html("<h3>Operational state: <span class=\"label label-warning\">FAIL</span></h3>");
       }

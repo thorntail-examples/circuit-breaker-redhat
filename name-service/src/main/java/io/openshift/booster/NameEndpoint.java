@@ -41,7 +41,7 @@ public class NameEndpoint {
     @Path("/name")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getName() {
-        NameWebSocketEndpoint.send(LocalTime.now().toString());
+        NameWebSocketEndpoint.send(LocalTime.now().toString() + (isOn.get() ? " OK" : " FAIL"));
         return isOn.get() ? Response.ok("World").build() : Response.serverError().entity("Name service down").build();
     }
 
