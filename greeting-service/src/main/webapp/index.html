@@ -15,81 +15,171 @@
   ~  limitations under the License.
   ~
   -->
-
 <html>
 
 <head>
-
-  <meta charset="utf-8">
-  <title>Circuit Breaker Mission - Greeting Service - WildFly Swarm</title>
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+<meta charset="utf-8">
+<title>Circuit Breaker Mission - WildFly Swarm</title>
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous">
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div>
-    <h1>Circuit Breaker Mission - Greeting Service - WildFly Swarm</h1>
-    <p class="lead">
-      TODO
-    </p>
+    <div>
+      <h1>Circuit Breaker Mission - WildFly Swarm</h1>
+      <p class="lead">
+            Cloud applications are often comprised of many services. And between those services there often can be many interactions.
+            But even if some of those services fail or are unavailable, we may want to offer an alternative response to an error condition,
+            that it does not increase load on service in, which is unavailable because of high load. And to achieve this, we need a generic
+            mechanism over the failed or unavailable service to service communication, which can quickly and easily determine that the services
+            are not functioning properly, hence can either return a default result or fail quickly and gracefully with enough information about
+            the current failure. This mechanism is called circuit breaker.
+            <br/>
+            On this page you can invoke the <code>greeting service</code>. This service uses a <code>name
+            service</code>. The invocations are protected by a circuit breaker. You can configure the state of the
+            <code>name service</code> using the <code>toggle</code> button.
+      </p>
 
-    <h2>Using the greeting service</h2>
+      <div class="row">
 
-    <form class="form-inline">
-      <button id="invoke" type="submit" class="btn btn-success">Invoke</button>
-      <button id="clear" type="submit" class="btn btn-success">Clear Log</button>
-    </form>
+        <div class="col-md-6">
+          <h2>Greeting service</h2>
+          <div id="circuit-state"></div>
+          <button id="invoke" type="submit" class="btn btn-primary">Invoke</button>
+          <h3>Result Log:</h3>
+          <form class="form-inline">
+            <button id="clear" type="submit" class="btn btn-success">Clear</button>
+          </form>
+          <pre><code id="greeting-result"></code></pre>
+        </div>
 
-    <h3>Result Log:</h3>
-    <pre><code id="greeting-result">Invoke the service to see the result.</code></pre>
+        <div class="col-md-6">
+          <h2>Name service</h2>
+          <div id="name-state"></div>
+          <form class="form-inline">
+            <button id="toggle" type="submit" class="btn btn-primary">Toggle</button>
+          </form>
+          <h3>Request Log:</h3>
+          <form class="form-inline">
+            <button id="clear-requests" type="submit" class="btn btn-success">Clear</button>
+          </form>
+          <pre><code id="name-requests"></code></pre>
+        </div>
 
-    <h2>Circuit Breaker</h2>
+      </div>
 
-    <form class="form-inline">
-      <button id="cb-info" type="submit" class="btn btn-success">Get Info</button>
-    </form>
+    </div>
 
-    <h3>Result:</h3>
-    <pre><code id="cb-result">Invoke the service to see the result.</code></pre>
-  </div>
-</div>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
+    <script>
+    var nameServiceUrlBase = window.location.origin.replace("wfswarm-circuit-breaker-greeting", "wfswarm-circuit-breaker-name");
 
-<script>
+    function initCircuitState() {
+      $.getJSON("/api/cb-state", function(res) {
+         updateCircuitState(res.state === "open");
+      });
+    }
+
+    function initNameServiceState() {
+      $.getJSON(nameServiceUrlBase + "/api/info", function(res) {
+        updateNameServiceState(res.state === "ok");
+      });
+    }
+
+    function updateNameServiceState(state) {
+      if (state) {
+        $("#name-state").html("<h3>Operational state: <span class=\"label label-info\">UP</span></h3>");
+      } else {
+        $("#name-state").html("<h3>Operational state: <span class=\"label label-warning\">FAIL</span></h3>");
+      }
+    }
+
+    function updateCircuitState(isOpen) {
+        if (isOpen) {
+          $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-warning\">OPEN</span></h3>");
+        } else {
+          $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-info\">CLOSED</span></h3>");
+        }
+      }
+
     $(document).ready(function() {
-       $("#invoke").click(function(e) {
+
+      $("#invoke").click(function(e) {
           $.getJSON("/api/greeting", function(res) {
-              var resultElement = $("#greeting-result");
-            if (resultElement.html().startsWith("Invoke the")) {
-              resultElement.html(JSON.stringify(res) + "\n");
-              } else {
-                resultElement.prepend(JSON.stringify(res) + "\n");
-              }
+            $("#greeting-result").prepend(JSON.stringify(res) + "\n");
           });
           e.preventDefault();
-       });
-       $("#clear").click(function(e) {
-           $("#greeting-result").html("Invoke the service to see the result.");
+      });
+
+      $("#toggle").click(function(e) {
+        var newState = $("#name-state").html().indexOf("FAIL") != -1 ? "ok" : "fail";
+        $.ajax({
+                url: nameServiceUrlBase + "/api/toggle",
+                type: 'PUT',
+                headers: {"Content-Type" : "application/json"},
+                data: JSON.stringify({state:newState}),
+              });
            e.preventDefault();
-       });
-       $("#cb-info").click(function(e) {
-           $.getJSON("/api/cb-state", function(res) {
-               $("#cb-result").html(JSON.stringify(res));
-           });
-           e.preventDefault();
-        });
+         });
+
+      $("#clear").click(function(e) {
+        $("#greeting-result").html("");
+        e.preventDefault();
+      });
+
+      $("#clear-requests").click(function(e) {
+        $("#name-requests").html("");
+        e.preventDefault();
+      });
+
+      initNameServiceState();
+      initCircuitState();
+
+      // WebSocket connections
+      var wsocket;
+      function connect() {
+        wsUrlBase = nameServiceUrlBase.replace("http://", "ws://");
+        wsocket = new WebSocket(wsUrlBase + "/name-ws");
+        wsocket.onmessage = onMessage;
+      }
+      function onMessage(evt) {
+          if (evt.data === "state:true") {
+            updateNameServiceState(true);
+          } else if (evt.data === "state:false") {
+            updateNameServiceState(false);
+          } else {
+            // Request accepted
+            $("#name-requests").prepend("GET /name at " + evt.data + "\n");
+          }
+      }
+      window.addEventListener("load", connect, false);
+
+      var cbWsocket;
+      function cbConnect() {
+        cbWsUrlBase = window.location.origin.replace("http://", "ws://");
+        cbWsocket = new WebSocket(cbWsUrlBase + "/cb-ws");
+        cbWsocket.onmessage = cbOnMessage;
+      }
+      function cbOnMessage(evt) {
+        var isOpen = (evt.data === "isOpen:true");
+        updateCircuitState(isOpen);
+        console.log("Circuit breaker is open: " + isOpen);
+      }
+      window.addEventListener("load", cbConnect, false);
+
     });
 </script>
-
 </body>
 
 </html>

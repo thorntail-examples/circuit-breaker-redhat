@@ -17,10 +17,9 @@
  */
 package io.openshift.booster;
 
+import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -33,22 +32,17 @@ import javax.ws.rs.core.Response;
  *
  * @author Martin Kouba
  */
-@ApplicationScoped
 @Path("/")
 public class NameEndpoint {
 
-    private AtomicBoolean isOn;
-
-    @PostConstruct
-    void init() {
-        isOn = new AtomicBoolean(true);
-    }
+    private AtomicBoolean isOn = new AtomicBoolean(true);
 
     @GET
     @Path("/name")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getName() {
-        return isOn.get() ? Response.ok("World").build() : Response.serverError().build();
+        NameWebSocketEndpoint.send(LocalTime.now().toString());
+        return isOn.get() ? Response.ok("World").build() : Response.serverError().entity("Name service down").build();
     }
 
     @PUT
@@ -57,6 +51,7 @@ public class NameEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public ServiceInfo toggle(ServiceInfo info) {
         isOn.set(info.isOn());
+        NameWebSocketEndpoint.send("state:" + isOn.get());
         return getInfo();
     }
 
@@ -64,7 +59,32 @@ public class NameEndpoint {
     @Path("/info")
     @Produces(MediaType.APPLICATION_JSON)
     public ServiceInfo getInfo() {
-        return isOn.get() ? ServiceInfo.INFO_OK : ServiceInfo.INFO_FAIL;
+        return isOn.get() ? ServiceInfo.OK : ServiceInfo.FAIL;
+    }
+
+    static class ServiceInfo {
+
+        static final ServiceInfo OK = new ServiceInfo("ok");
+        static final ServiceInfo FAIL = new ServiceInfo("fail");
+
+        private final String state;
+
+        public ServiceInfo() {
+            this.state = null;
+        }
+
+        public ServiceInfo(String state) {
+            this.state = state;
+        }
+
+        public String getState() {
+            return state;
+        }
+
+        boolean isOn() {
+            return "ok".equals(state);
+        }
+
     }
 
 }

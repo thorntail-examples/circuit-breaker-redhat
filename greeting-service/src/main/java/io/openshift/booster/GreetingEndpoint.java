@@ -17,8 +17,7 @@
  */
 package io.openshift.booster;
 
-import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -27,11 +26,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
+/**
+ *
+ * @author Martin Kouba
+ */
 @Path("/")
 public class GreetingEndpoint {
-
-    @Inject
-    URI nameServiceUri;
 
     @Inject
     Client client;
@@ -40,7 +40,10 @@ public class GreetingEndpoint {
     @Path("/greeting")
     @Produces("application/json")
     public Greeting greeting() {
-        return new Greeting(String.format("Hello, %s!", new NameCommand(nameServiceUri, client).execute()));
+        NameCommand command = new NameCommand(client);
+        Greeting greeting = new Greeting(String.format("Hello, %s!", command.execute()));
+        CircuitBreakerWebSocketEndpoint.send("isOpen:" + command.isCircuitBreakerOpen());
+        return greeting;
     }
 
     /**
@@ -58,19 +61,19 @@ public class GreetingEndpoint {
 
         private final String content;
 
-        private final String timestamp;
+        private final String time;
 
         public Greeting(String content) {
             this.content = content;
-            this.timestamp = LocalDateTime.now().toString();
+            this.time = LocalTime.now().toString();
         }
 
         public String getContent() {
             return content;
         }
 
-        public String getTimestamp() {
-            return timestamp;
+        public String getTime() {
+            return time;
         }
 
     }

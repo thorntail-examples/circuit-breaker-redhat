@@ -18,6 +18,7 @@
 package io.openshift.booster;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
@@ -38,23 +39,25 @@ public class NameCommand extends HystrixCommand<String> {
 
     static final HystrixCommandGroupKey GROUP_KEY = HystrixCommandGroupKey.Factory.asKey(NameCommand.class.getPackage().getName());
 
-    private final URI nameServiceUri;
+    /**
+     * Hardcoded name service URI - in real apps this should be configurable
+     */
+    private static final URI NAME_SERVICE_URI = initNameServiceUri();
 
     private final Client client;
 
-    NameCommand(URI nameServiceUri, Client client) {
+    NameCommand(Client client) {
         // Set the command key explicitly so that we're able to obtain the circuit breaker status
         super(Setter.withGroupKey(GROUP_KEY).andCommandKey(KEY));
-        this.nameServiceUri = nameServiceUri;
         this.client = client;
     }
 
     @Override
     protected String run() throws Exception {
-        Response response = client.target(nameServiceUri).request(MediaType.TEXT_PLAIN_TYPE).get();
+        Response response = client.target(NAME_SERVICE_URI).request(MediaType.TEXT_PLAIN_TYPE).get();
         try {
             if (response.getStatus() != 200) {
-                throw new RuntimeException("Cannot get name from " + nameServiceUri);
+                throw new RuntimeException("Cannot get name from " + NAME_SERVICE_URI);
             }
             String value = response.readEntity(String.class);
             return value;
@@ -66,6 +69,14 @@ public class NameCommand extends HystrixCommand<String> {
     @Override
     protected String getFallback() {
         return "Fallback";
+    }
+
+    private static URI initNameServiceUri() {
+        try {
+            return new URI("http://wfswarm-circuit-breaker-name:8080/api/name");
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException();
+        }
     }
 
 }
