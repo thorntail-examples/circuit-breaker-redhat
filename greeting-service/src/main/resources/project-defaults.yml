@@ -2,4 +2,4 @@ hystrix:
   command:
     default:
       circuitBreaker:
-        requestVolumeThreshold: 5
+        requestVolumeThreshold: 3
