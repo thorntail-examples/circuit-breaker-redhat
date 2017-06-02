@@ -46,7 +46,7 @@ public class NameEndpoint {
     }
 
     @PUT
-    @Path("/toggle")
+    @Path("/state")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public ServiceInfo toggle(ServiceInfo info) {
