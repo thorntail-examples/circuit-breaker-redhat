@@ -29,11 +29,6 @@
          <artifactId>jaxrs</artifactId>
       </dependency>
 
-      <dependency>
-         <groupId>org.wildfly.swarm</groupId>
-         <artifactId>cdi</artifactId>
-      </dependency>
-
       <!-- We need this because of CorsFilter -->
       <dependency>
          <groupId>org.jboss.resteasy</groupId>
