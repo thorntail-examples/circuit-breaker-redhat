@@ -26,8 +26,7 @@
    <name>WildFly Swarm - Circuit Breaker Booster</name>
 
    <properties>
-      <version.wildfly.swarm>2017.5.0</version.wildfly.swarm>
-      <version.resteasy>3.0.19.Final</version.resteasy>
+      <version.wildfly.swarm>2017.6.0</version.wildfly.swarm>
    </properties>
 
    <modules>
@@ -40,8 +39,7 @@
 
          <dependency>
             <groupId>org.wildfly.swarm</groupId>
-            <!-- Hystrix fraction is not stable yet -->
-            <artifactId>bom-all</artifactId>
+            <artifactId>bom</artifactId>
             <version>${version.wildfly.swarm}</version>
             <type>pom</type>
             <scope>import</scope>
@@ -53,6 +51,13 @@
             <version>1.1.12.Final</version>
             <scope>test</scope>
          </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+            <scope>test</scope>
+        </dependency>
 
       </dependencies>
    </dependencyManagement>

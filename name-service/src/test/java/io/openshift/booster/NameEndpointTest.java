@@ -21,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
@@ -40,30 +39,29 @@ public class NameEndpointTest {
 
     private static final String FAIL = "{\"state\":\"fail\"}";
 
-    @BeforeClass
-    public static void setup() {
-        RestAssured.baseURI = "http://localhost:8080/api";
-    }
+    private static final String BASE_URI = "http://localhost:8080/api";
 
     @Test
     @RunAsClient
     public void testGetName() {
-        RestAssured.when().get("name").then().assertThat().statusCode(200).body(equalTo("World"));
+        RestAssured.when().get(BASE_URI + "/name").then().assertThat().statusCode(200).body(equalTo("World"));
     }
 
     @Test
     @RunAsClient
     public void testGetInfo() {
-        RestAssured.when().get("info").then().assertThat().statusCode(200).body(equalTo(OK));
+        RestAssured.when().get(BASE_URI + "/info").then().assertThat().statusCode(200).body(equalTo(OK));
     }
 
     @Test
     @RunAsClient
     public void testToggle() {
-        RestAssured.given().header("Content-type", MediaType.APPLICATION_JSON).body(FAIL).put("toggle").then().assertThat().statusCode(200).body(equalTo(FAIL));
-        RestAssured.when().get("info").then().assertThat().statusCode(200).body(equalTo(FAIL));
-        RestAssured.given().header("Content-type", MediaType.APPLICATION_JSON).body(OK).put("toggle").then().assertThat().statusCode(200).body(equalTo(OK));
-        RestAssured.when().get("info").then().assertThat().statusCode(200).body(equalTo(OK));
+        RestAssured.given().header("Content-type", MediaType.APPLICATION_JSON).body(FAIL).put(BASE_URI + "/state").then().assertThat().statusCode(200)
+                .body(equalTo(FAIL));
+        RestAssured.when().get(BASE_URI + "/info").then().assertThat().statusCode(200).body(equalTo(FAIL));
+        RestAssured.given().header("Content-type", MediaType.APPLICATION_JSON).body(OK).put(BASE_URI + "/state").then().assertThat().statusCode(200)
+                .body(equalTo(OK));
+        RestAssured.when().get(BASE_URI + "/info").then().assertThat().statusCode(200).body(equalTo(OK));
     }
 
 }

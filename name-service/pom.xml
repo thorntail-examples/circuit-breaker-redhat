@@ -33,7 +33,6 @@
       <dependency>
          <groupId>org.jboss.resteasy</groupId>
          <artifactId>resteasy-jaxrs</artifactId>
-         <version>${version.resteasy}</version>
          <scope>provided</scope>
       </dependency>
 
@@ -48,6 +47,7 @@
          <artifactId>arquillian-junit-container</artifactId>
          <scope>test</scope>
       </dependency>
+
    </dependencies>
 
    <profiles>
