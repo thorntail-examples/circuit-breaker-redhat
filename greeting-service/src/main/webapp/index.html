@@ -33,17 +33,32 @@
     <div>
       <h1>Circuit Breaker Mission - WildFly Swarm</h1>
       <p class="lead">
-            Cloud applications are often comprised of many services. And between those services there often can be many interactions.
-            But even if some of those services fail or are unavailable, we may want to offer an alternative response to an error condition,
-            that it does not increase load on service in, which is unavailable because of high load. And to achieve this, we need a generic
-            mechanism over the failed or unavailable service to service communication, which can quickly and easily determine that the services
-            are not functioning properly, hence can either return a default result or fail quickly and gracefully with enough information about
-            the current failure. This mechanism is called circuit breaker.
+            The Circuit Breaker pattern provides a generic
+            mechanism for quickly and easily reporting whether or not a
+            service is functioning properly. This allows a service to
+            report information about a failure and decide whether to
+            quickly fail or simply degrade gracefully instead of
+            failing.
+      </p>
+      <p class="lead">
+            Modern cloud applications are often comprised of
+            many smaller services which interact with each other in a
+            many-to-many manner. Understanding when a service is failing
+            or unavailable is critically important, which is the main
+            reason for the Health Check pattern. In some cases though,
+            you may want to provide an alternative response if a service
+            interacts with a failing or unavailable service. For
+            example, if <em>service1</em> interacts with <em>service2</em> and <em>service2</em>
+            begins to fail or become unavailable due to high load,
+            simply detecting the failure and restarting <em>service2</em> may not
+            alleviate the issue. Instead, you may want to signal
+            <em>service1</em> to reduce the amount of load it puts on <em>service2</em>
+            until <em>service2</em> returns to a normal state.
       </p>
       <p>
-            On this page you can invoke the <code>greeting service</code>. This service uses a <code>name
-            service</code>. The invocations are protected by a circuit breaker. You can configure the state of the
-            <code>name service</code> using the <code>toggle</code> button.
+            On this page you can invoke the <strong>greeting service</strong>. This service uses a <strong>name
+            service</strong>. The invocations are protected by a circuit breaker. You can configure the state of the
+            name service using the <strong>toggle</strong> button.
       </p>
 
       <div class="row">
