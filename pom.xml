@@ -20,7 +20,7 @@
 
    <groupId>io.openshift.booster</groupId>
    <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-   <version>1-SNAPSHOT</version>
+   <version>1</version>
    <packaging>pom</packaging>
 
    <name>WildFly Swarm - Circuit Breaker Booster</name>
