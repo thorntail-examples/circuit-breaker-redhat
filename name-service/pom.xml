@@ -76,6 +76,16 @@
                            <exclude>webapp</exclude>
                         </excludes>
                      </generator>
+                     <enricher>
+                        <includes>
+                           <include>wildfly-swarm-health-check</include>
+                        </includes>
+                        <config>
+                           <wildfly-swarm-health-check>
+                              <path>/api/info</path>
+                           </wildfly-swarm-health-check>
+                        </config>
+                     </enricher>
                   </configuration>
                </plugin>
             </plugins>

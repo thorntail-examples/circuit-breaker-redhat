@@ -85,7 +85,7 @@ public class OpenshiftIT {
         });
 
         System.out.println("Pods running, waiting for probes...");
-        String greetingProbeUri = greetingBaseUri + "/api/ping";
+        String greetingProbeUri = greetingBaseUri;
         String nameProbeUri = nameBaseUri + "/api/info";
 
         await().pollInterval(1, TimeUnit.SECONDS).atMost(5, TimeUnit.MINUTES).until(() -> {

@@ -2,19 +2,3 @@ apiVersion: v1
 kind: Deployment
 metadata:
   name: ${project.artifactId}
-spec:
-  template:
-    spec:
-      containers:
-        - readinessProbe:
-            httpGet:
-              path: /api/info
-              port: 8080
-              scheme: HTTP
-          livenessProbe:
-            httpGet:
-              path: /api/info
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 60
-            periodSeconds: 30

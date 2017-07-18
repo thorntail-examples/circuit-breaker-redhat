@@ -24,7 +24,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Response;
 
 /**
  *
@@ -44,17 +43,6 @@ public class GreetingEndpoint {
         Greeting greeting = new Greeting(String.format("Hello, %s!", command.execute()));
         CircuitBreakerWebSocketEndpoint.send("isOpen:" + command.isCircuitBreakerOpen());
         return greeting;
-    }
-
-    /**
-     * This endpoint is used as Kubernetes liveness and readiness probe.
-     *
-     * @return the response
-     */
-    @GET
-    @Path("/ping")
-    public Response ping() {
-        return Response.ok().build();
     }
 
     static class Greeting {
