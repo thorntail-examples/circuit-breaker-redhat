@@ -29,6 +29,11 @@
          <artifactId>jaxrs</artifactId>
       </dependency>
 
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>monitor</artifactId>
+      </dependency>
+
       <!-- We need this because of CorsFilter -->
       <dependency>
          <groupId>org.jboss.resteasy</groupId>
@@ -77,9 +82,6 @@
                         </excludes>
                      </generator>
                      <enricher>
-                        <includes>
-                           <include>wildfly-swarm-health-check</include>
-                        </includes>
                         <config>
                            <wildfly-swarm-health-check>
                               <path>/api/info</path>

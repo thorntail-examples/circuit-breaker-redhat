@@ -90,9 +90,6 @@
                         </excludes>
                      </generator>
                      <enricher>
-                        <includes>
-                           <include>wildfly-swarm-health-check</include>
-                        </includes>
                         <config>
                            <wildfly-swarm-health-check>
                               <path>/</path>
