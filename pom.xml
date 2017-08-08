@@ -15,7 +15,7 @@
    <parent>
       <groupId>io.openshift</groupId>
       <artifactId>booster-parent</artifactId>
-      <version>6</version>
+      <version>8</version>
    </parent>
 
    <groupId>io.openshift.booster</groupId>
@@ -26,7 +26,7 @@
    <name>WildFly Swarm - Circuit Breaker Booster</name>
 
    <properties>
-      <version.wildfly.swarm>2017.7.0</version.wildfly.swarm>
+      <version.wildfly.swarm>2017.8.1</version.wildfly.swarm>
       <version.resteasy>3.0.19.Final</version.resteasy>
       <version.javax.json>1.0.4</version.javax.json>
       <version.junit>4.12</version.junit>
