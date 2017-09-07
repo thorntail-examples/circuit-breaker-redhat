@@ -42,7 +42,7 @@ public class NameCommand extends HystrixCommand<String> {
     /**
      * Hardcoded name service URI - in real apps this should be configurable
      */
-    private static final URI NAME_SERVICE_URI = initNameServiceUri();
+    private static final URI NAME_SERVICE_URI = URI.create("http://wfswarm-circuit-breaker-name:8080/api/name");
 
     private final Client client;
 
@@ -70,13 +70,4 @@ public class NameCommand extends HystrixCommand<String> {
     protected String getFallback() {
         return "Fallback";
     }
-
-    private static URI initNameServiceUri() {
-        try {
-            return new URI("http://wfswarm-circuit-breaker-name:8080/api/name");
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException();
-        }
-    }
-
 }
