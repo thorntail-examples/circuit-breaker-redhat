@@ -20,14 +20,15 @@
 
    <groupId>io.openshift.booster</groupId>
    <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-   <version>2-SNAPSHOT</version>
+   <version>7.0.0-redhat-1</version>
    <packaging>pom</packaging>
 
    <name>WildFly Swarm - Circuit Breaker Booster</name>
 
    <properties>
-      <version.wildfly.swarm>2017.8.1</version.wildfly.swarm>
+      <version.wildfly.swarm>7.0.0.redhat-4</version.wildfly.swarm>
       <version.resteasy>3.0.19.Final</version.resteasy>
+      <version.override.jackson>2.7.7</version.override.jackson>
       <version.javax.json>1.0.4</version.javax.json>
       <version.junit>4.12</version.junit>
    </properties>
@@ -44,6 +45,14 @@
          <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>bom</artifactId>
+            <version>${version.wildfly.swarm}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>bom-certified</artifactId>
             <version>${version.wildfly.swarm}</version>
             <type>pom</type>
             <scope>import</scope>
@@ -89,5 +98,51 @@
          </plugin>
       </plugins>
    </build>
+
+   <repositories>
+      <repository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository</id>
+         <url>https://maven.repository.redhat.com/ga/</url>
+      </repository>
+      <repository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository-earlyaccess</id>
+         <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+      </repository>
+   </repositories>
+   <pluginRepositories>
+      <pluginRepository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository</id>
+         <url>https://maven.repository.redhat.com/ga/</url>
+      </pluginRepository>
+      <pluginRepository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository-earlyaccess</id>
+         <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+      </pluginRepository>
+   </pluginRepositories>
+
 
 </project>
