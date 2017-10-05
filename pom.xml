@@ -20,14 +20,15 @@
 
    <groupId>io.openshift.booster</groupId>
    <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-   <version>4-SNAPSHOT</version>
+   <version>7.0.0-redhat-3</version>
    <packaging>pom</packaging>
 
    <name>WildFly Swarm - Circuit Breaker Booster</name>
 
    <properties>
-      <version.wildfly.swarm>2017.9.5</version.wildfly.swarm>
+      <version.wildfly.swarm>7.0.0.redhat-6</version.wildfly.swarm>
       <version.resteasy>3.0.19.Final</version.resteasy>
+      <version.override.jackson>2.7.7</version.override.jackson>
       <version.javax.json>1.0.4</version.javax.json>
       <version.junit>4.12</version.junit>
       <!-- Licenses - plugins -->
@@ -36,7 +37,7 @@
       <version.license-maven-plugin>1.13</version.license-maven-plugin>
       <version.wildfly-licenses-plugin>1.0.1</version.wildfly-licenses-plugin>
       <!-- Licenses - JBoss repo URL used in custom-settings -->
-      <jboss.repo.url>https://repository.jboss.org/nexus/content/groups/public</jboss.repo.url>
+      <jboss.repo.url>https://maven.repository.redhat.com/ga/</jboss.repo.url>
       <licenses.pom.file>pom.xml</licenses.pom.file>
    </properties>
 
@@ -52,6 +53,14 @@
          <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>bom</artifactId>
+            <version>${version.wildfly.swarm}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+
+         <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>bom-certified</artifactId>
             <version>${version.wildfly.swarm}</version>
             <type>pom</type>
             <scope>import</scope>
@@ -96,7 +105,52 @@
             </configuration>
          </plugin>
       </plugins>
-
    </build>
+
+   <repositories>
+      <repository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository</id>
+         <url>https://maven.repository.redhat.com/ga/</url>
+      </repository>
+      <repository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository-earlyaccess</id>
+         <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+      </repository>
+   </repositories>
+   <pluginRepositories>
+      <pluginRepository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository</id>
+         <url>https://maven.repository.redhat.com/ga/</url>
+      </pluginRepository>
+      <pluginRepository>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+         <id>jboss-enterprise-maven-repository-earlyaccess</id>
+         <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+      </pluginRepository>
+   </pluginRepositories>
+
 
 </project>
