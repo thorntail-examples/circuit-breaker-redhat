@@ -15,7 +15,7 @@
    <parent>
       <groupId>io.openshift.booster</groupId>
       <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-      <version>3-SNAPSHOT</version>
+      <version>4-SNAPSHOT</version>
    </parent>
 
    <artifactId>wfswarm-circuit-breaker-greeting</artifactId>
