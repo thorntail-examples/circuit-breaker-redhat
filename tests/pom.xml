@@ -47,18 +47,32 @@
          <groupId>io.openshift.booster</groupId>
          <artifactId>wfswarm-circuit-breaker-name</artifactId>
          <version>${project.version}</version>
-         <type>war</type>
-         <scope>test</scope>
+         <classifier>classes</classifier>
       </dependency>
 
       <dependency>
          <groupId>io.openshift.booster</groupId>
          <artifactId>wfswarm-circuit-breaker-greeting</artifactId>
          <version>${project.version}</version>
-         <type>war</type>
-         <scope>test</scope>
+         <classifier>classes</classifier>
       </dependency>
 
+      <dependency>
+         <groupId>org.jboss.arquillian.junit</groupId>
+         <artifactId>arquillian-junit-container</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.arquillian.cube</groupId>
+         <artifactId>arquillian-cube-openshift</artifactId>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>io.undertow</groupId>
+               <artifactId>undertow-core</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
    </dependencies>
 
    <profiles>
@@ -66,6 +80,53 @@
          <id>openshift-it</id>
          <build>
             <plugins>
+               <plugin>
+                  <groupId>io.fabric8</groupId>
+                  <artifactId>fabric8-maven-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>resource</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <profile>aggregate</profile>
+                  </configuration>
+               </plugin>
+
+               <!-- needed to be able to run the tests in an ephemeral namespace -->
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-resources-plugin</artifactId>
+                  <executions>
+                     <execution>
+                        <id>copy-image-streams</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                           <outputDirectory>${project.build.directory}</outputDirectory>
+                           <resources>
+                              <resource>
+                                 <directory>${project.parent.basedir}/name-service/target</directory>
+                                 <includes>
+                                    <include>*-is.yml</include>
+                                 </includes>
+                              </resource>
+                              <resource>
+                                 <directory>${project.parent.basedir}/greeting-service/target</directory>
+                                 <includes>
+                                    <include>*-is.yml</include>
+                                 </includes>
+                              </resource>
+                           </resources>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+
                <!--
                  - 1.
                  -
@@ -132,12 +193,6 @@
                         <additionalClasspathElement>${project.build.directory}/dependency/jackson-annotations.jar</additionalClasspathElement>
                         <additionalClasspathElement>${project.build.directory}/dependency/jackson-databind.jar</additionalClasspathElement>
                      </additionalClasspathElements>
-
-                     <systemPropertyVariables>
-                        <nameServiceTemplate>${project.parent.basedir}/name-service/target/classes/META-INF/fabric8/openshift.yml</nameServiceTemplate>
-                        <greetingServiceTemplate>${project.parent.basedir}/greeting-service/target/classes/META-INF/fabric8/openshift.yml</greetingServiceTemplate>
-                     </systemPropertyVariables>
-                     
                   </configuration>
                   <executions>
                      <execution>
