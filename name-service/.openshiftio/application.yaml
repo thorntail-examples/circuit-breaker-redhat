@@ -74,6 +74,8 @@ objects:
           value: "-pl ${SOURCE_REPOSITORY_DIR}"
         - name: ARTIFACT_DIR
           value: "${SOURCE_REPOSITORY_DIR}/target"
+        - name: ARTIFACT_COPY_ARGS
+          value: "*-swarm.jar"
       type: Source
     triggers:
     - github:
