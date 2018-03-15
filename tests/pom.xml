@@ -15,17 +15,13 @@
    <parent>
       <groupId>io.openshift.booster</groupId>
       <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-      <version>7.0.0-redhat-8-SNAPSHOT</version>
+      <version>7.0.1-redhat-1-SNAPSHOT</version>
    </parent>
 
    <artifactId>wfswarm-circuit-breaker-tests</artifactId>
    <packaging>jar</packaging>
 
    <name>WildFly Swarm - C/B Booster - Tests</name>
-
-   <properties>
-      <version.override.jackson>2.7.7</version.override.jackson>
-   </properties>
 
    <dependencies>
 
@@ -60,6 +56,20 @@
       <dependency>
          <groupId>org.jboss.arquillian.junit</groupId>
          <artifactId>arquillian-junit-container</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>io.rest-assured</groupId>
+         <artifactId>rest-assured</artifactId>
+         <version>${version.restassured}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.awaitility</groupId>
+         <artifactId>awaitility</artifactId>
+         <version>${version.awaitility}</version>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
