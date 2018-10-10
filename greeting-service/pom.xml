@@ -14,34 +14,34 @@
 
    <parent>
       <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-      <version>7.1.0-redhat-3-SNAPSHOT</version>
+      <artifactId>thorntail-circuit-breaker-parent</artifactId>
+      <version>2.2.0-redhat-1-SNAPSHOT</version>
    </parent>
 
-   <artifactId>wfswarm-circuit-breaker-greeting</artifactId>
+   <artifactId>thorntail-circuit-breaker-greeting</artifactId>
    <packaging>war</packaging>
 
-   <name>WildFly Swarm - C/B Booster - Greeting Service</name>
+   <name>Thorntail - C/B Booster - Greeting Service</name>
 
    <dependencies>
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>jaxrs</artifactId>
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>hystrix</artifactId>
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>cdi</artifactId>
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
-         <artifactId>monitor</artifactId>
+         <groupId>io.thorntail</groupId>
+         <artifactId>microprofile-health</artifactId>
       </dependency>
 
       <dependency>
@@ -52,16 +52,11 @@
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>arquillian</artifactId>
          <scope>test</scope>
       </dependency>
 
-      <dependency>
-         <groupId>org.jboss.arquillian.junit</groupId>
-         <artifactId>arquillian-junit-container</artifactId>
-         <scope>test</scope>
-      </dependency>
    </dependencies>
 
    <profiles>
@@ -83,7 +78,7 @@
                   <configuration>
                      <generator>
                         <includes>
-                           <include>wildfly-swarm</include>
+                           <include>thorntail-v2</include>
                         </includes>
                         <excludes>
                            <exclude>webapp</exclude>
@@ -91,9 +86,9 @@
                      </generator>
                      <enricher>
                         <config>
-                           <wildfly-swarm-health-check>
+                           <thorntail-v2-health-check>
                               <path>/</path>
-                           </wildfly-swarm-health-check>
+                           </thorntail-v2-health-check>
                         </config>
                      </enricher>
                   </configuration>

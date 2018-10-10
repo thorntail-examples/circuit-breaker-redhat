@@ -42,7 +42,7 @@ public class NameCommand extends HystrixCommand<String> {
     /**
      * Hardcoded name service URI - in real apps this should be configurable
      */
-    private static final URI NAME_SERVICE_URI = URI.create("http://wfswarm-circuit-breaker-name:8080/api/name");
+    private static final URI NAME_SERVICE_URI = URI.create("http://thorntail-circuit-breaker-name:8080/api/name");
 
     private final Client client;
 

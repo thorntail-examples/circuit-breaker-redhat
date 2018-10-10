@@ -14,14 +14,14 @@
 
    <parent>
       <groupId>io.openshift.booster</groupId>
-      <artifactId>wfswarm-circuit-breaker-parent</artifactId>
-      <version>7.1.0-redhat-3-SNAPSHOT</version>
+      <artifactId>thorntail-circuit-breaker-parent</artifactId>
+      <version>2.2.0-redhat-1-SNAPSHOT</version>
    </parent>
 
-   <artifactId>wfswarm-circuit-breaker-tests</artifactId>
+   <artifactId>thorntail-circuit-breaker-tests</artifactId>
    <packaging>jar</packaging>
 
-   <name>WildFly Swarm - C/B Booster - Tests</name>
+   <name>Thorntail - C/B Booster - Tests</name>
 
    <dependencies>
 
@@ -41,34 +41,33 @@
 
       <dependency>
          <groupId>io.openshift.booster</groupId>
-         <artifactId>wfswarm-circuit-breaker-name</artifactId>
+         <artifactId>thorntail-circuit-breaker-name</artifactId>
          <version>${project.version}</version>
          <classifier>classes</classifier>
       </dependency>
 
       <dependency>
          <groupId>io.openshift.booster</groupId>
-         <artifactId>wfswarm-circuit-breaker-greeting</artifactId>
+         <artifactId>thorntail-circuit-breaker-greeting</artifactId>
          <version>${project.version}</version>
          <classifier>classes</classifier>
       </dependency>
 
       <dependency>
-         <groupId>org.jboss.arquillian.junit</groupId>
-         <artifactId>arquillian-junit-container</artifactId>
-      </dependency>
-
-      <dependency>
          <groupId>io.rest-assured</groupId>
          <artifactId>rest-assured</artifactId>
-         <version>${version.restassured}</version>
-         <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>org.awaitility</groupId>
          <artifactId>awaitility</artifactId>
          <version>${version.awaitility}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>arquillian</artifactId>
          <scope>test</scope>
       </dependency>
 
@@ -136,74 +135,9 @@
                      </execution>
                   </executions>
                </plugin>
-
-               <!--
-                 - 1.
-                 -
-                 - For running the test, we need the Jackson dependencies in a higher version than what is brought in by Swarm.
-                 - Unfortunately, Failsafe can't be configured do add specific artifacts to the test classpath, just files,
-                 - so we need to download the dependencies manually. This is what this plugin execution does.
-                 -->
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-dependency-plugin</artifactId>
-                  <executions>
-                     <execution>
-                        <id>prepare-jackson-dependencies-for-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                           <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                           <stripVersion>true</stripVersion>
-                           <artifactItems>
-                              <artifactItem>
-                                 <groupId>com.fasterxml.jackson.core</groupId>
-                                 <artifactId>jackson-core</artifactId>
-                                 <version>${version.override.jackson}</version>
-                              </artifactItem>
-                              <artifactItem>
-                                 <groupId>com.fasterxml.jackson.core</groupId>
-                                 <artifactId>jackson-annotations</artifactId>
-                                 <version>${version.override.jackson}</version>
-                              </artifactItem>
-                              <artifactItem>
-                                 <groupId>com.fasterxml.jackson.core</groupId>
-                                 <artifactId>jackson-databind</artifactId>
-                                 <version>${version.override.jackson}</version>
-                              </artifactItem>
-                           </artifactItems>
-                        </configuration>
-                     </execution>
-                  </executions>
-               </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-failsafe-plugin</artifactId>
-                  <configuration>
-                     <!--
-                       - 2.
-                       -
-                       - These artifacts are added to the test classpath automatically because they are project dependencies.
-                       - However, they are of too old versions, so we remove them here and add correct versions later.
-                       -->
-                     <classpathDependencyExcludes>
-                        <classpathDependencyExclude>com.fasterxml.jackson.core:jackson-core</classpathDependencyExclude>
-                        <classpathDependencyExclude>com.fasterxml.jackson.core:jackson-annotations</classpathDependencyExclude>
-                        <classpathDependencyExclude>com.fasterxml.jackson.core:jackson-databind</classpathDependencyExclude>
-                     </classpathDependencyExcludes>
-                     <!--
-                       - 3.
-                       -
-                       - And here, we add the correct versions of the artifacts to test classpath. Unfortunately,
-                       - this is only possible by file paths, not by artifact coordinates.
-                       -->
-                     <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.directory}/dependency/jackson-core.jar</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.directory}/dependency/jackson-annotations.jar</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.directory}/dependency/jackson-databind.jar</additionalClasspathElement>
-                     </additionalClasspathElements>
-                  </configuration>
                   <executions>
                      <execution>
                         <goals>

@@ -27,10 +27,11 @@ import io.restassured.response.Response;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.get;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -41,8 +42,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @RunWith(Arquillian.class)
 public class OpenshiftIT {
 
-    private static final String NAME_SERVICE_APP = "wfswarm-circuit-breaker-name";
-    private static final String GREETING_SERVICE_APP = "wfswarm-circuit-breaker-greeting";
+    private static final String NAME_SERVICE_APP = "thorntail-circuit-breaker-name";
+    private static final String GREETING_SERVICE_APP = "thorntail-circuit-breaker-greeting";
 
     private static final String OK = "ok";
     private static final String FAIL = "fail";
@@ -56,7 +57,7 @@ public class OpenshiftIT {
     // See also circuitBreaker.requestVolumeThreshold
     private static final long REQUEST_THRESHOLD = 3;
 
-    @RouteURL(value = NAME_SERVICE_APP)
+    @RouteURL(NAME_SERVICE_APP)
     @AwaitRoute(path = "/api/info")
     private String nameServiceUrl;
 
@@ -113,11 +114,11 @@ public class OpenshiftIT {
     }
 
     private void changeNameServiceState(String state) {
-        given()
+        RestAssured.given()
                 .header("Content-type", "application/json")
                 .body(Json.createObjectBuilder().add("state", state).build().toString())
                 .put(nameServiceUrl + "api/state")
-        .then()
+                .then()
                 .assertThat()
                 .statusCode(200)
                 .body("state", equalTo(state));
