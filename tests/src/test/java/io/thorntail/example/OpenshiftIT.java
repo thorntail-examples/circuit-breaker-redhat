@@ -15,33 +15,25 @@
  *  limitations under the License.
  *
  */
+package io.thorntail.example;
 
-package io.openshift.booster;
-
-import java.util.concurrent.TimeUnit;
-
-import javax.json.Json;
-
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static io.restassured.RestAssured.get;
+import java.util.concurrent.TimeUnit;
+
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 
-/**
- * @author Martin Kouba
- */
 @RunWith(Arquillian.class)
 public class OpenshiftIT {
-
     private static final String NAME_SERVICE_APP = "thorntail-circuit-breaker-name";
     private static final String GREETING_SERVICE_APP = "thorntail-circuit-breaker-greeting";
 
@@ -53,7 +45,7 @@ public class OpenshiftIT {
     private static final String HELLO_FALLBACK = "Hello, Fallback!";
 
     // See also circuitBreaker.sleepWindowInMilliseconds
-    private static final long SLEEP_WINDOW = 5000l;
+    private static final long SLEEP_WINDOW = 5000L;
     // See also circuitBreaker.requestVolumeThreshold
     private static final long REQUEST_THRESHOLD = 3;
 
@@ -66,7 +58,7 @@ public class OpenshiftIT {
     private String greetingServiceUrl;
 
     @Test
-    public void testCircuitBreaker() throws InterruptedException {
+    public void testCircuitBreaker() {
         assertCircuitBreaker(CLOSED);
         assertGreeting(HELLO_OK);
         changeNameServiceState(FAIL);
@@ -84,7 +76,7 @@ public class OpenshiftIT {
     }
 
     private Response greetingResponse() {
-        return RestAssured.when().get(greetingServiceUrl + "api/greeting");
+        return when().get(greetingServiceUrl + "api/greeting");
     }
 
     private void assertGreeting(String expected) {
@@ -99,7 +91,7 @@ public class OpenshiftIT {
     }
 
     private Response circuitBreakerResponse() {
-        return RestAssured.when().get(greetingServiceUrl + "api/cb-state");
+        return when().get(greetingServiceUrl + "api/cb-state");
     }
 
     private void assertCircuitBreaker(String expectedState) {
@@ -114,12 +106,13 @@ public class OpenshiftIT {
     }
 
     private void changeNameServiceState(String state) {
-        RestAssured.given()
+        String json = "{\"state\":\"" + state + "\"}";
+        given()
+        .when()
                 .header("Content-type", "application/json")
-                .body(Json.createObjectBuilder().add("state", state).build().toString())
+                .body(json)
                 .put(nameServiceUrl + "api/state")
-                .then()
-                .assertThat()
+        .then()
                 .statusCode(200)
                 .body("state", equalTo(state));
     }

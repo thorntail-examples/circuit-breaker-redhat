@@ -1,106 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- ~ ~ Copyright 2016-2017 Red Hat, Inc, and individual contributors. ~
-   ~ Licensed under the Apache License, Version 2.0 (the "License"); ~ you may
-   not use this file except in compliance with the License. ~ You may obtain
-   a copy of the License at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 ~
-   ~ Unless required by applicable law or agreed to in writing, software ~ distributed
-   under the License is distributed on an "AS IS" BASIS, ~ WITHOUT WARRANTIES
-   OR CONDITIONS OF ANY KIND, either express or implied. ~ See the License for
-   the specific language governing permissions and ~ limitations under the License.
-   ~ -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   <modelVersion>4.0.0</modelVersion>
+<!--
+  ~
+  ~  Copyright 2016-2017 Red Hat, Inc, and individual contributors.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-   <parent>
-      <groupId>io.openshift</groupId>
-      <artifactId>booster-parent</artifactId>
-      <version>24</version>
-   </parent>
+  <groupId>io.thorntail.example</groupId>
+  <artifactId>thorntail-circuit-breaker-parent</artifactId>
+  <version>2.4.0-redhat-1-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-   <groupId>io.openshift.booster</groupId>
-   <artifactId>thorntail-circuit-breaker-parent</artifactId>
-   <version>2.2.0-redhat-2-SNAPSHOT</version>
-   <packaging>pom</packaging>
+  <name>Thorntail - Circuit Breaker</name>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-   <name>Thorntail - Circuit Breaker Booster</name>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-   <properties>
-      <version.thorntail>2.2.0.Final-redhat-00021</version.thorntail>
-      <version.resteasy>3.0.24.Final</version.resteasy>
-      <version.javax.json>1.0.4</version.javax.json>
-      <version.junit>4.12</version.junit>
-      <version.restassured>3.0.7</version.restassured>
-      <version.awaitility>3.1.0</version.awaitility>
-   </properties>
+    <version.arquillian-cube>1.18.2</version.arquillian-cube>
+    <version.arquillian-junit>1.4.1.Final</version.arquillian-junit>
+    <version.awaitility>3.1.6</version.awaitility>
+    <!-- can't use 4.0.0 because of https://github.com/fabric8io/fabric8-maven-plugin/issues/1607 -->
+    <version.fabric8-maven-plugin>4.1.0</version.fabric8-maven-plugin>
+    <version.javax.json>1.0.4</version.javax.json>
+    <version.junit>4.12</version.junit>
+    <version.maven-resources-plugin>3.1.0</version.maven-resources-plugin>
+    <version.maven-surefire-plugin>2.22.1</version.maven-surefire-plugin>
+    <version.maven-war-plugin>3.2.2</version.maven-war-plugin>
+    <version.restassured>3.3.0</version.restassured>
+    <version.resteasy>3.6.2.Final</version.resteasy>
+    <version.thorntail>2.4.0.Final-redhat-00013</version.thorntail>
 
-   <modules>
-      <module>name-service</module>
-      <module>greeting-service</module>
-      <module>tests</module>
-   </modules>
+    <fabric8.generator.from>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:1.6</fabric8.generator.from>
+  </properties>
 
-   <dependencyManagement>
-      <dependencies>
-         <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>bom</artifactId>
-            <version>${version.thorntail}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
+  <modules>
+    <module>name-service</module>
+    <module>greeting-service</module>
+    <module>tests</module>
+  </modules>
 
-         <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>bom-certified</artifactId>
-            <version>${version.thorntail}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>bom</artifactId>
+        <version>${version.thorntail}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>bom-certified</artifactId>
+        <version>${version.thorntail}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.arquillian.cube</groupId>
+        <artifactId>arquillian-cube-bom</artifactId>
+        <version>${version.arquillian-cube}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-         <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>${version.restassured}</version>
-            <scope>test</scope> 
-         </dependency>
-      </dependencies>
-   </dependencyManagement>
+  <repositories>
+    <repository>
+      <id>redhat-ga</id>
+      <name>Red Hat GA Repository</name>
+      <url>https://maven.repository.redhat.com/ga/</url>
+    </repository>
+    <repository>
+      <id>redhat-early-access</id>
+      <name>Red Hat Early Access Repository</name>
+      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+    </repository>
+  </repositories>
 
-   <build>
-      <plugins>
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-surefire-plugin</artifactId>
-           <configuration>
-             <systemPropertyVariables>
-               <swarm.build.repos>https://maven.repository.redhat.com/ga/,https://maven.repository.redhat.com/earlyaccess/all/</swarm.build.repos>
-             </systemPropertyVariables>
-           </configuration>
-         </plugin>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>redhat-ga</id>
+      <name>Red Hat GA Repository</name>
+      <url>https://maven.repository.redhat.com/ga/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>redhat-early-access</id>
+      <name>Red Hat Early Access Repository</name>
+      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
-         <plugin>
-            <groupId>io.thorntail</groupId>
-            <artifactId>thorntail-maven-plugin</artifactId>
-            <version>${version.thorntail}</version>
-            <executions>
-               <execution>
-                  <goals>
-                     <goal>package</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-
-         <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-               <failOnMissingWebXml>false</failOnMissingWebXml>
-               <attachClasses>true</attachClasses>
-            </configuration>
-         </plugin>
-      </plugins>
-
-   </build>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
+        <version>${version.thorntail}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${version.maven-war-plugin}</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

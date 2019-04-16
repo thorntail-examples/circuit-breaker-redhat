@@ -15,40 +15,34 @@
  *  limitations under the License.
  *
  */
-package io.openshift.booster;
+package io.thorntail.example;
 
-import java.time.LocalTime;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
+import javax.ws.rs.core.MediaType;
+import java.time.LocalTime;
 
-/**
- *
- * @author Martin Kouba
- */
 @Path("/")
 public class GreetingEndpoint {
-
     @Inject
-    Client client;
+    @RestClient
+    private NameService nameService;
 
     @GET
     @Path("/greeting")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Greeting greeting() {
-        NameCommand command = new NameCommand(client);
-        Greeting greeting = new Greeting(String.format("Hello, %s!", command.execute()));
-        CircuitBreakerWebSocketEndpoint.send("isOpen:" + command.isCircuitBreakerOpen());
+        Greeting greeting = new Greeting(String.format("Hello, %s!", nameService.get()));
+        CircuitBreakerWebSocketEndpoint.send("isOpen:" + NameService.isCircuitBreakerOpen());
         return greeting;
     }
 
     static class Greeting {
-
         private final String content;
-
         private final String time;
 
         public Greeting(String content) {
@@ -63,7 +57,5 @@ public class GreetingEndpoint {
         public String getTime() {
             return time;
         }
-
     }
-
 }
