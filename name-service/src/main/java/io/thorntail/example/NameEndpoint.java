@@ -15,10 +15,7 @@
  *  limitations under the License.
  *
  */
-package io.openshift.booster;
-
-import java.time.LocalTime;
-import java.util.concurrent.atomic.AtomicBoolean;
+package io.thorntail.example;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,14 +24,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- *
- * @author Martin Kouba
- */
 @Path("/")
 public class NameEndpoint {
-
     private AtomicBoolean isOn = new AtomicBoolean(true);
 
     @GET
@@ -63,7 +57,6 @@ public class NameEndpoint {
     }
 
     static class ServiceInfo {
-
         static final ServiceInfo OK = new ServiceInfo("ok");
         static final ServiceInfo FAIL = new ServiceInfo("fail");
 
@@ -84,7 +77,5 @@ public class NameEndpoint {
         boolean isOn() {
             return "ok".equals(state);
         }
-
     }
-
 }

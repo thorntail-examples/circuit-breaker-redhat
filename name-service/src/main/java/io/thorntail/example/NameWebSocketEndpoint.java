@@ -15,11 +15,7 @@
  *  limitations under the License.
  *
  */
-package io.openshift.booster;
-
-import java.io.IOException;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+package io.thorntail.example;
 
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
@@ -27,15 +23,13 @@ import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-/**
- *
- * @author Martin Kouba
- */
-@ServerEndpoint("/cb-ws")
-public class CircuitBreakerWebSocketEndpoint {
-
-    static Queue<Session> queue = new ConcurrentLinkedQueue<>();
+@ServerEndpoint("/name-ws")
+public class NameWebSocketEndpoint {
+    private static Queue<Session> queue = new ConcurrentLinkedQueue<>();
 
     static void send(String msg) {
         for (Session session : queue) {
@@ -56,5 +50,4 @@ public class CircuitBreakerWebSocketEndpoint {
     public void close(Session session, CloseReason reason) {
         queue.remove(session);
     }
-
 }
