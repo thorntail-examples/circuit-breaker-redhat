@@ -1229,7 +1229,7 @@
     <dependency>
       <groupId>io.thorntail.example</groupId>
       <artifactId>thorntail-circuit-breaker-greeting</artifactId>
-      <version>2.4.0-redhat-1</version>
+      <version>2.4.0-redhat-2</version>
       <licenses>
         <license>
           <name>Apache Software License, Version 2.0</name>
@@ -1240,7 +1240,7 @@
     <dependency>
       <groupId>io.thorntail.example</groupId>
       <artifactId>thorntail-circuit-breaker-name</artifactId>
-      <version>2.4.0-redhat-1</version>
+      <version>2.4.0-redhat-2</version>
       <licenses>
         <license>
           <name>Apache Software License, Version 2.0</name>
@@ -1251,7 +1251,7 @@
     <dependency>
       <groupId>io.thorntail.example</groupId>
       <artifactId>thorntail-circuit-breaker-parent</artifactId>
-      <version>2.4.0-redhat-1</version>
+      <version>2.4.0-redhat-2</version>
       <licenses>
         <license>
           <name>Apache Software License, Version 2.0</name>
@@ -1262,7 +1262,7 @@
     <dependency>
       <groupId>io.thorntail.example</groupId>
       <artifactId>thorntail-circuit-breaker-tests</artifactId>
-      <version>2.4.0-redhat-1</version>
+      <version>2.4.0-redhat-2</version>
       <licenses>
         <license>
           <name>Apache Software License, Version 2.0</name>
