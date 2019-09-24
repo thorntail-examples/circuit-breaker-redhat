@@ -17,7 +17,6 @@
  */
 package io.thorntail.example;
 
-import io.restassured.response.Response;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
 import org.jboss.arquillian.junit.Arquillian;
@@ -27,7 +26,6 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -44,9 +42,9 @@ public class OpenshiftIT {
     private static final String HELLO_OK = "Hello, World!";
     private static final String HELLO_FALLBACK = "Hello, Fallback!";
 
-    // See also circuitBreaker.sleepWindowInMilliseconds
-    private static final long SLEEP_WINDOW = 5000L;
-    // See also circuitBreaker.requestVolumeThreshold
+    // circuitBreaker.delay, in seconds
+    private static final long SLEEP_WINDOW = 5;
+    // circuitBreaker.requestVolumeThreshold
     private static final long REQUEST_THRESHOLD = 3;
 
     @RouteURL(NAME_SERVICE_APP)
@@ -61,57 +59,48 @@ public class OpenshiftIT {
     public void testCircuitBreaker() {
         assertCircuitBreaker(CLOSED);
         assertGreeting(HELLO_OK);
+
         changeNameServiceState(FAIL);
         for (int i = 0; i < REQUEST_THRESHOLD; i++) {
             assertGreeting(HELLO_FALLBACK);
         }
-        // Circuit breaker should be open now
-        // Wait a little to get the current health counts - see also metrics.healthSnapshot.intervalInMilliseconds
-        await().atMost(5, TimeUnit.SECONDS).until(() -> testCircuitBreakerState(OPEN));
-        changeNameServiceState(OK);
-        // See also circuitBreaker.sleepWindowInMilliseconds
-        await().atMost(7, TimeUnit.SECONDS).pollDelay(SLEEP_WINDOW, TimeUnit.MILLISECONDS).until(() -> testGreeting(HELLO_OK));
-        // The health counts should be reset
-        assertCircuitBreaker(CLOSED);
-    }
+        await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> assertCircuitBreaker(OPEN));
 
-    private Response greetingResponse() {
-        return when().get(greetingServiceUrl + "api/greeting");
+        changeNameServiceState(OK);
+        await().atMost(SLEEP_WINDOW + 5, TimeUnit.SECONDS).pollDelay(SLEEP_WINDOW, TimeUnit.SECONDS).untilAsserted(() -> {
+            assertGreeting(HELLO_OK);
+            assertCircuitBreaker(CLOSED);
+        });
     }
 
     private void assertGreeting(String expected) {
-        Response response = greetingResponse();
-        response.then().statusCode(200).body(containsString(expected));
+        given()
+                .baseUri(greetingServiceUrl)
+        .when()
+                .get("/api/greeting")
+        .then()
+                .statusCode(200)
+                .body(containsString(expected));
     }
 
-    private boolean testGreeting(String expected) {
-        Response response = greetingResponse();
-        response.then().statusCode(200);
-        return response.getBody().asString().contains(expected);
-    }
-
-    private Response circuitBreakerResponse() {
-        return when().get(greetingServiceUrl + "api/cb-state");
-    }
-
-    private void assertCircuitBreaker(String expectedState) {
-        Response response = circuitBreakerResponse();
-        response.then().statusCode(200).body("state", equalTo(expectedState));
-    }
-
-    private boolean testCircuitBreakerState(String expectedState) {
-        Response response = circuitBreakerResponse();
-        response.then().statusCode(200);
-        return response.getBody().asString().contains(expectedState);
+    private void assertCircuitBreaker(String expected) {
+        given()
+                .baseUri(greetingServiceUrl)
+        .when()
+                .get("/api/cb-state")
+        .then()
+                .statusCode(200)
+                .body("state", equalTo(expected));
     }
 
     private void changeNameServiceState(String state) {
         String json = "{\"state\":\"" + state + "\"}";
         given()
+                .baseUri(nameServiceUrl)
         .when()
                 .header("Content-type", "application/json")
                 .body(json)
-                .put(nameServiceUrl + "api/state")
+                .put("/api/state")
         .then()
                 .statusCode(200)
                 .body("state", equalTo(state));
