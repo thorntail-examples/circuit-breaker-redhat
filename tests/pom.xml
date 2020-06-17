@@ -32,13 +32,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.thorntail.example</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>thorntail-circuit-breaker-greeting</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
     </dependency>
     <dependency>
-      <groupId>io.thorntail.example</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>thorntail-circuit-breaker-name</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
