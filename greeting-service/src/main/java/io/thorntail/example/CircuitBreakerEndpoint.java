@@ -17,23 +17,24 @@
  */
 package io.thorntail.example;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 @Path("/")
 public class CircuitBreakerEndpoint {
+    @Inject
+    private NameService.CircuitBreakerObserver circuitBreakerObserver;
+
     @GET
     @Path("/cb-state")
     @Produces("application/json")
     public CircuitBreaker getState() {
-        return NameService.isCircuitBreakerOpen() ? CircuitBreaker.OPEN : CircuitBreaker.CLOSED;
+        return new CircuitBreaker(circuitBreakerObserver.currentState().name().toLowerCase());
     }
 
     static class CircuitBreaker {
-        static final CircuitBreaker OPEN = new CircuitBreaker("open");
-        static final CircuitBreaker CLOSED = new CircuitBreaker("closed");
-
         private final String state;
 
         public CircuitBreaker(String state) {

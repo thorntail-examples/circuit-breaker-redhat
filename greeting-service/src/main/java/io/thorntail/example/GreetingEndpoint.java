@@ -36,9 +36,7 @@ public class GreetingEndpoint {
     @Path("/greeting")
     @Produces(MediaType.APPLICATION_JSON)
     public Greeting greeting() {
-        Greeting greeting = new Greeting(String.format("Hello, %s!", nameService.get()));
-        CircuitBreakerWebSocketEndpoint.send("isOpen:" + NameService.isCircuitBreakerOpen());
-        return greeting;
+        return new Greeting(String.format("Hello, %s!", nameService.get()));
     }
 
     static class Greeting {

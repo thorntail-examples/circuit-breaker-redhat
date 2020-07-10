@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @ServerEndpoint("/cb-ws")
 public class CircuitBreakerWebSocketEndpoint {
-    private static Queue<Session> queue = new ConcurrentLinkedQueue<>();
+    private static final Queue<Session> queue = new ConcurrentLinkedQueue<>();
 
     static void send(String msg) {
         for (Session session : queue) {

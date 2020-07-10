@@ -101,9 +101,9 @@
     <script>
     var nameServiceUrlBase = window.location.origin.replace("thorntail-circuit-breaker-greeting", "thorntail-circuit-breaker-name");
 
-    function initCircuitState() {
+    function initCircuitBreakerState() {
       $.getJSON("/api/cb-state", function(res) {
-         updateCircuitState(res.state === "open");
+         updateCircuitBreakerState(res.state);
       });
     }
 
@@ -121,33 +121,35 @@
       }
     }
 
-    function updateCircuitState(isOpen) {
-        if (isOpen) {
-          $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-warning\">OPEN</span></h3>");
-        } else {
-          $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-info\">CLOSED</span></h3>");
-        }
+    function updateCircuitBreakerState(state) {
+      if (state === "open") {
+        $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-warning\">OPEN</span></h3>");
+      } else if (state === "closed") {
+        $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-info\">CLOSED</span></h3>");
+      } else {
+        $("#circuit-state").html("<h3>Circuit breaker state: <span class=\"label label-danger\">HALF OPEN</span></h3>");
       }
+    }
 
     $(document).ready(function() {
 
       $("#invoke").click(function(e) {
-          $.getJSON("/api/greeting", function(res) {
-            $("#greeting-result").prepend(JSON.stringify(res) + "\n");
-          });
-          e.preventDefault();
+        $.getJSON("/api/greeting", function(res) {
+          $("#greeting-result").prepend(JSON.stringify(res) + "\n");
+        });
+        e.preventDefault();
       });
 
       $("#toggle").click(function(e) {
-        var newState = $("#name-state").html().indexOf("FAIL") != -1 ? "ok" : "fail";
+        var newState = $("#name-state").html().indexOf("FAIL") !== -1 ? "ok" : "fail";
         $.ajax({
-                url: nameServiceUrlBase + "/api/state",
-                type: 'PUT',
-                headers: {"Content-Type" : "application/json"},
-                data: JSON.stringify({state:newState}),
-              });
-           e.preventDefault();
-         });
+            url: nameServiceUrlBase + "/api/state",
+            type: 'PUT',
+            headers: {"Content-Type": "application/json"},
+            data: JSON.stringify({state: newState}),
+        });
+        e.preventDefault();
+      });
 
       $("#clear").click(function(e) {
         $("#greeting-result").html("");
@@ -160,7 +162,7 @@
       });
 
       initNameServiceState();
-      initCircuitState();
+      initCircuitBreakerState();
 
       // WebSocket connections
       var wsocket;
@@ -170,14 +172,14 @@
         wsocket.onmessage = onMessage;
       }
       function onMessage(evt) {
-          if (evt.data === "state:true") {
-            updateNameServiceState(true);
-          } else if (evt.data === "state:false") {
-            updateNameServiceState(false);
-          } else {
-            // Request accepted
-            $("#name-requests").prepend("GET /name at " + evt.data + "\n");
-          }
+        if (evt.data === "state:true") {
+          updateNameServiceState(true);
+        } else if (evt.data === "state:false") {
+          updateNameServiceState(false);
+        } else {
+          // Request accepted
+          $("#name-requests").prepend("GET /name at " + evt.data + "\n");
+        }
       }
       window.addEventListener("load", connect, false);
 
@@ -188,9 +190,8 @@
         cbWsocket.onmessage = cbOnMessage;
       }
       function cbOnMessage(evt) {
-        var isOpen = (evt.data === "isOpen:true");
-        updateCircuitState(isOpen);
-        console.log("Circuit breaker is open: " + isOpen);
+        updateCircuitBreakerState(evt.data);
+        console.log("circuit breaker state: " + evt.data);
       }
       window.addEventListener("load", cbConnect, false);
 
