@@ -17,19 +17,18 @@
  */
 package io.thorntail.example;
 
-import com.netflix.hystrix.HystrixCircuitBreaker;
-import com.netflix.hystrix.HystrixCommandKey;
-import io.smallrye.faulttolerance.SimpleCommand;
+import io.smallrye.faulttolerance.api.CircuitBreakerState;
+import io.smallrye.faulttolerance.api.CircuitBreakerStateChanged;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.lang.reflect.Method;
 
 @RegisterRestClient(baseUri = "http://thorntail-circuit-breaker-name:8080/")
 @ApplicationScoped
@@ -45,23 +44,19 @@ public interface NameService {
         return "Fallback";
     }
 
-    static boolean isCircuitBreakerOpen() {
-        // MicroProfile Fault Tolerance doesn't provide access to circuit breaker status
-        // and SmallRye Fault Tolerance doesn't expose an API for that either (yet);
-        // so here we rely on SmallRye Fault Tolerance implementation details (Hystrix)
-        try {
-            Method method = NameService.class.getMethod("get");
-            HystrixCircuitBreaker circuitBreaker = HystrixCircuitBreaker.Factory.getInstance(
-                    HystrixCommandKey.Factory.asKey(SimpleCommand.getCommandKey(method)));
-            if (circuitBreaker == null) {
-                // not yet initialized, so not open (all circuit breakers start closed)
-                return false;
+    @ApplicationScoped
+    class CircuitBreakerObserver {
+        private volatile CircuitBreakerState state = CircuitBreakerState.CLOSED;
+
+        public void observe(@Observes CircuitBreakerStateChanged event) {
+            if (NameService.class.equals(event.clazz) && "get".equals(event.method.getName())) {
+                state = event.targetState;
+                CircuitBreakerWebSocketEndpoint.send(event.targetState.name().toLowerCase());
             }
-            return circuitBreaker.isOpen();
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }
+
+        public CircuitBreakerState currentState() {
+            return state;
         }
     }
 }
