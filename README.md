@@ -29,10 +29,10 @@ oc apply -f ./name-service/.openshiftio/application.yaml
 oc new-app --template=thorntail-circuit-breaker-name
 ```
 
-### Deployment with the Fabric8 Maven Plugin
+### Deployment with the JKube Maven Plugin
 
 ```bash
-mvn clean fabric8:deploy -Popenshift
+mvn clean oc:deploy -Popenshift
 ```
 
 ## Test everything
