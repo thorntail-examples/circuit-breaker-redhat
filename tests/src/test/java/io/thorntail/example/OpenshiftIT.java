@@ -17,12 +17,12 @@
  */
 package io.thorntail.example;
 
-import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
-import org.arquillian.cube.openshift.impl.enricher.RouteURL;
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import io.thorntail.openshift.test.OpenShiftTest;
+import io.thorntail.openshift.test.injection.TestResource;
+import io.thorntail.openshift.test.injection.WithName;
+import org.junit.jupiter.api.Test;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
@@ -30,7 +30,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
-@RunWith(Arquillian.class)
+@OpenShiftTest
 public class OpenshiftIT {
     private static final String NAME_SERVICE_APP = "thorntail-circuit-breaker-name";
     private static final String GREETING_SERVICE_APP = "thorntail-circuit-breaker-greeting";
@@ -47,13 +47,13 @@ public class OpenshiftIT {
     // circuitBreaker.requestVolumeThreshold
     private static final long REQUEST_THRESHOLD = 3;
 
-    @RouteURL(NAME_SERVICE_APP)
-    @AwaitRoute(path = "/api/info")
-    private String nameServiceUrl;
+    @TestResource
+    @WithName(NAME_SERVICE_APP)
+    private URL nameServiceUrl;
 
-    @RouteURL(GREETING_SERVICE_APP)
-    @AwaitRoute
-    private String greetingServiceUrl;
+    @TestResource
+    @WithName(GREETING_SERVICE_APP)
+    private URL greetingServiceUrl;
 
     @Test
     public void testCircuitBreaker() {
@@ -75,7 +75,7 @@ public class OpenshiftIT {
 
     private void assertGreeting(String expected) {
         given()
-                .baseUri(greetingServiceUrl)
+                .baseUri(greetingServiceUrl.toString())
         .when()
                 .get("/api/greeting")
         .then()
@@ -85,7 +85,7 @@ public class OpenshiftIT {
 
     private void assertCircuitBreaker(String expected) {
         given()
-                .baseUri(greetingServiceUrl)
+                .baseUri(greetingServiceUrl.toString())
         .when()
                 .get("/api/cb-state")
         .then()
@@ -96,7 +96,7 @@ public class OpenshiftIT {
     private void changeNameServiceState(String state) {
         String json = "{\"state\":\"" + state + "\"}";
         given()
-                .baseUri(nameServiceUrl)
+                .baseUri(nameServiceUrl.toString())
         .when()
                 .header("Content-type", "application/json")
                 .body(json)
